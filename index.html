@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Crash Guard – Smart Helmet</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Weather Notification Toast -->
+  <div id="weatherToast" class="weather-toast">
+    <div class="weather-toast-content">
+      <div class="weather-toast-icon">🌤️</div>
+      <div class="weather-toast-text">
+        <div class="weather-toast-title">Today's Weather</div>
+        <div class="weather-toast-details" id="toastWeatherDetails">Loading...</div>
+      </div>
+      <button class="weather-toast-close" onclick="closeWeatherToast()">✕</button>
+    </div>
+  </div>
+
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-screen">
+    <!-- Left Panel - Brand -->
+    <div class="login-left">
+      <div class="brand-logo">
+        <img src="https://i.postimg.cc/RFT1vh4P/unnamed.jpg" alt="Crash Guard Logo" />
+      </div>
+      <div class="brand-title">Crash Guard</div>
+      <div class="brand-subtitle">Your smart shield on the road</div>
+    </div>
+    
+    <!-- Right Panel - Login/Signup Form -->
+    <div class="login-right">
+      <div class="login-form">
+        <div class="welcome-section">
+          <div class="welcome-title">Welcome</div>
+          <div class="welcome-description">
+            Crash Guard keeps you safe by detecting accidents, notifying your emergency contacts, and sharing live location.
+          </div>
+        </div>
+        
+        <!-- Error Message Display -->
+        <div id="errorMessage" class="error-message"></div>
+        
+        <div class="login-box-container">
+          <!-- Login Form -->
+          <div id="loginForm">
+            <div class="field">
+              <label class="small" style="color: #00d4ff; font-weight: 600;">Phone Number</label>
+              <input id="loginPhone" placeholder="+91 9xxxxxxxxx" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,212,255,0.2); color: white;">
+            </div>
+            <div class="field">
+              <label class="small" style="color: #00d4ff; font-weight: 600;">Password</label>
+              <input id="loginPassword" type="password" placeholder="Enter your password" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,212,255,0.2); color: white;">
+            </div>
+            
+            <div style="margin-top:20px;">
+              <button class="primary" onclick="loginUser()" style="width:100%;padding:14px; background: linear-gradient(135deg, #00d4ff 0%, #017BFF 100%); box-shadow: 0 4px 15px rgba(0,212,255,0.3);">Login</button>
+            </div>
+            
+            <div style="margin-top: 15px; text-align: center;">
+              <span style="color: var(--muted);">Don't have an account? </span>
+              <a href="#" onclick="showSignup(); return false;" style="color: #00d4ff; font-weight: 600; text-decoration: none;">Sign Up</a>
+            </div>
+          </div>
+          
+          <!-- Signup Form (Initially Hidden) -->
+          <div id="signupForm" style="display: none;">
+            <div class="field">
+              <label class="small" style="color: #00d4ff; font-weight: 600;">Name</label>
+              <input id="signupName" placeholder="Your name" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,212,255,0.2); color: white;">
+            </div>
+            <div class="field">
+              <label class="small" style="color: #00d4ff; font-weight: 600;">Phone Number</label>
+              <input id="signupPhone" placeholder="+91 9xxxxxxxxx" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,212,255,0.2); color: white;">
+              <span class="small" style="color: rgba(255,255,255,0.5); margin-top: 4px;">Only Indian numbers (+91) are accepted</span>
+            </div>
+            <div class="field">
+              <label class="small" style="color: #00d4ff; font-weight: 600;">Password</label>
+              <input id="signupPassword" type="password" placeholder="Create a password" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,212,255,0.2); color: white;">
+            </div>
+            <div class="field">
+              <label class="small" style="color: #00d4ff; font-weight: 600;">Confirm Password</label>
+              <input id="signupConfirmPassword" type="password" placeholder="Confirm your password" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,212,255,0.2); color: white;">
+            </div>
+            
+            <div style="margin-top:20px;">
+              <button class="primary" onclick="signupUser()" style="width:100%;padding:14px; background: linear-gradient(135deg, #00d4ff 0%, #017BFF 100%); box-shadow: 0 4px 15px rgba(0,212,255,0.3);">Sign Up</button>
+            </div>
+            
+            <div style="margin-top: 15px; text-align: center;">
+              <span style="color: var(--muted);">Already have an account? </span>
+              <a href="#" onclick="showLogin(); return false;" style="color: #00d4ff; font-weight: 600; text-decoration: none;">Login</a>
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 40px; font-size: 14px; text-align: center;">
+          <span class="glow-red">Created by RED HACK</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="mainApp" style="display:none;">
+    <!-- Dashboard Navigation -->
+    <div class="dashboard-nav-container">
+        <div class="brand">
+            <div class="logo">
+                <img src="https://i.postimg.cc/RFT1vh4P/unnamed.jpg" alt="Crash Guard Logo" />
+            </div>
+            <span class="brand-name">Crash Guard</span>
+        </div>
+      <div class="dashboard-nav">
+        <div class="nav-item active" onclick="showPage('home')">Home</div>
+        <div class="nav-item" onclick="showPage('crashlog')">Crash Log</div>
+        <div class="nav-item" onclick="showPage('quickaccess')">Quick Access</div>
+        <div class="nav-item" onclick="showPage('connectivity')">Connectivity Status</div>
+        <div class="nav-item" onclick="showPage('hospitals')">Nearby Hospitals</div>
+        <div class="nav-item" onclick="showPage('insurance')">Health Insurance</div>
+        <div class="nav-item" onclick="showPage('settings')">Settings</div>
+        <div class="nav-item" onclick="showPage('about')">About Us</div>
+      </div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+      <!-- Welcome Message -->
+      <div style="max-width:1100px;margin:0 auto;padding:0 28px;">
+        <div class="welcome-message">
+          <div class="welcome-title-main">Your Smart Shield on the Road</div>
+          <div class="welcome-desc">
+            Crash Guard keeps you safe by detecting accidents, notifying your emergency contacts, and sharing live location.<br>
+            Protecting riders with real-time monitoring and automatic emergency alerts with intelligent severity detection.
+          </div>
+        </div>
+      </div>
+
+      <div class="app">
+        <header>
+          <div class="title">
+            <div class="logo" aria-hidden>
+              <img src="https://i.postimg.cc/RFT1vh4P/unnamed.jpg" alt="Crash Guard Logo" />
+            </div>
+            <div>
+              <h1 class="neon-blue">Crash Guard – Smart Helmet</h1>
+              <p class="lead">Bluetooth helmet manager • Auto-share location on crash • Navigator • Weather • Emergency contacts • Severity Detection</p>
+            </div>
+          </div>
+          <div class="small">Status: <span id="btStatus">Bluetooth disconnected</span> · <span id="loginUser">Not signed in</span></div>
+        </header>
+
+        <!-- left column -->
+        <section>
+          <div class="card helmet">
+            <div style="width:120px;text-align:center">
+              <svg width="96" height="96" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="11" stroke="rgba(255,255,255,0.06)" stroke-width="1.2" />
+                <path d="M6 14C6 10 8 7 12 7s6 3 6 7" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M8 18h8" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <div style="margin-top:8px" class="small">Helmet connected: <strong id="helmetName">—</strong></div>
+              <div style="margin-top:8px" class="helmet-wear-status">
+                <span id="helmetWearStatus" class="wear-status-badge">Not Worn</span>
+              </div>
+            </div>
+            <div class="info">
+              <div class="status-row">
+                <div>
+                  <div class="big-status" id="crashStatus">SAFE</div>
+                  <div class="small">Crash detection state</div>
+                  <div style="margin-top:8px">
+                    <span id="severityBadge" class="severity-badge severity-none">No Crash</span>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div class="small">Location</div>
+                  <div id="coords">Lat: — · Lon: —</div>
+                  <div class="small" id="speed">Speed: —</div>
+                </div>
+              </div>
+
+              <div class="controls">
+                <button onclick="connectHelmet()">Connect Bluetooth Helmet</button>
+                <button class="primary" id="navBtn" onclick="openNavigator()">Open Navigator</button>
+                <button onclick="toggleTracking()" id="trackBtn">Start Tracker</button>
+                <button class="danger" onclick="simulateCrash()">Simulate Crash</button>
+              </div>
+
+              <div style="margin-top:12px" class="meta">Device motion available: <span id="motionAvail">checking…</span> · Weather: <span id="weatherSummary">—</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="card">
+            <strong class="neon-blue">Quick Actions</strong>
+            <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+              <button onclick="requestLocation()">Get Location</button>
+              <button onclick="shareLocationNow()">Share Location Now</button>
+              <button onclick="sendAmbulance()">Contact Ambulance</button>
+            </div>
+            <div style="margin-top:12px" class="small">Tips: Allow location & motion permission for automatic crash detection to work best. On desktop, use "Simulate Crash".</div>
+          </div>
+
+          <!-- Severity Detection Info Card -->
+          <div style="margin-top:12px" class="card">
+            <strong class="neon-blue">Severity Detection System</strong>
+            <div style="margin-top:10px;">
+              <div class="severity-info-item">
+                <span class="severity-badge severity-minor">MINOR</span>
+                <span class="small">Impact 35-50 m/s² • 45s response time • Standard alert</span>
+              </div>
+              <div class="severity-info-item">
+                <span class="severity-badge severity-moderate">MODERATE</span>
+                <span class="small">Impact 50-70 m/s² • 30s response time • Priority alert</span>
+              </div>
+              <div class="severity-info-item">
+                <span class="severity-badge severity-severe">SEVERE</span>
+                <span class="small">Impact >70 m/s² • 15s response time • Emergency alert</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- right column -->
+        <aside class="sidebar">
+          <div class="card">
+            <div class="mini"><strong class="neon-blue">Emergency Contacts</strong><button onclick="openAddContact()">Add</button></div>
+            <div class="contacts-list" id="contacts"></div>
+          </div>
+
+          <div class="card">
+            <div class="mini"><strong class="neon-blue">Map & Live Tracker</strong><button onclick="centerMap()">Center</button></div>
+            <div id="map">Map will appear here (tap Tracker & allow location)</div>
+            <div style="margin-top:8px" class="small">Last updated: <span id="locTime">—</span></div>
+          </div>
+
+          <div class="card">
+            <div class="mini"><strong class="neon-blue">Weather at you</strong><div id="temp">—</div></div>
+            <div class="small" id="weatherDetails">Allow location to fetch local weather.</div>
+          </div>
+        </aside>
+
+        <footer style="font-size: 16px;"><span class="glow-red">Created by RED HACK</span></footer>
+      </div>
+    </div>
+
+    <!-- Crash Log Page -->
+    <div id="crashlog" class="page">
+      <div class="full-page">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h2 class="neon-blue" style="margin:0;">Crash Log History</h2>
+          <button class="danger" onclick="clearCrashHistory()" style="padding:8px 16px;">Clear History</button>
+        </div>
+        <div id="fullCrashLog">
+          <div class="crash-log-item">
+            <div style="font-weight:bold;color:var(--accent);">No crashes detected</div>
+            <div class="small">System is monitoring for crashes. Logs will appear here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Access Page -->
+    <div id="quickaccess" class="page">
+      <div class="full-page">
+        <h2 class="neon-blue" style="margin-bottom:20px;">Quick Access</h2>
+        <p style="color:var(--muted);margin-bottom:30px;">Quick navigation to all essential features and emergency functions.</p>
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:20px;">
+          <!-- Emergency Actions -->
+          <div class="card" onclick="simulateCrash()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">🚨 Simulate Crash</h3>
+            <p style="color:var(--muted);font-size:14px;">Test the emergency crash detection system</p>
+          </div>
+          
+          <div class="card" onclick="shareLocationNow()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">📍 Share Location</h3>
+            <p style="color:var(--muted);font-size:14px;">Share your current location with emergency contacts</p>
+          </div>
+          
+          <div class="card" onclick="sendAmbulance()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">🚑 Call Ambulance</h3>
+            <p style="color:var(--muted);font-size:14px;">Emergency call to ambulance (108)</p>
+          </div>
+          
+          <!-- Tracking & Navigation -->
+          <div class="card" onclick="toggleTracking()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">📡 GPS Tracker</h3>
+            <p style="color:var(--muted);font-size:14px;">Start/Stop live location tracking</p>
+          </div>
+          
+          <div class="card" onclick="openNavigator()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">🗺️ Navigator</h3>
+            <p style="color:var(--muted);font-size:14px;">Open Google Maps navigation</p>
+          </div>
+          
+          <div class="card" onclick="requestLocation()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">📌 Get Location</h3>
+            <p style="color:var(--muted);font-size:14px;">Capture current GPS coordinates</p>
+          </div>
+          
+          <!-- Device Management -->
+          <div class="card" onclick="connectHelmet()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">🪖 Connect Helmet</h3>
+            <p style="color:var(--muted);font-size:14px;">Pair Bluetooth smart helmet</p>
+          </div>
+          
+          <div class="card" onclick="openAddContact()" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">👥 Add Contact</h3>
+            <p style="color:var(--muted);font-size:14px;">Add emergency contact</p>
+          </div>
+          
+          <!-- Dashboard Navigation -->
+          <div class="card" onclick="showPage('crashlog')" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">📋 Crash Log</h3>
+            <p style="color:var(--muted);font-size:14px;">View crash detection history</p>
+          </div>
+          
+          <div class="card" onclick="showPage('connectivity')" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">📶 Connectivity</h3>
+            <p style="color:var(--muted);font-size:14px;">Check Bluetooth & GPS status</p>
+          </div>
+          
+          <div class="card" onclick="showPage('hospitals')" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">🏥 Hospitals</h3>
+            <p style="color:var(--muted);font-size:14px;">Find nearby hospitals</p>
+          </div>
+          
+          <div class="card" onclick="showPage('insurance')" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">🛡️ Insurance</h3>
+            <p style="color:var(--muted);font-size:14px;">Manage health insurance</p>
+          </div>
+          
+          <div class="card" onclick="showPage('settings')" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">⚙️ Settings</h3>
+            <p style="color:var(--muted);font-size:14px;">Manage profile & preferences</p>
+          </div>
+          
+          <div class="card" onclick="showPage('home')" style="cursor:pointer;">
+            <h3 class="neon-blue" style="margin-top:0;">🏠 Home</h3>
+            <p style="color:var(--muted);font-size:14px;">Return to main dashboard</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connectivity Status Page -->
+    <div id="connectivity" class="page">
+      <div class="full-page">
+        <h2 class="neon-blue" style="margin-bottom:20px;">Connectivity Status</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">Bluetooth Status</h3>
+            <div style="margin:15px 0;">
+              <div style="font-size:18px;color:var(--accent);" id="btStatusFull">Disconnected</div>
+              <div class="small">Connected device: <span id="btNameFull">—</span></div>
+              <div class="small" style="margin-top:8px;">Helmet Worn: <span id="helmetWearStatusFull" class="wear-status-badge-inline">Not Worn</span></div>
+            </div>
+            <button onclick="connectHelmet()">Connect Helmet</button>
+          </div>
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">Location Services</h3>
+            <div style="margin:15px 0;">
+              <div style="font-size:18px;color:var(--accent);" id="locationStatus">Checking...</div>
+              <div class="small">GPS accuracy: <span id="locationAccuracy">—</span></div>
+            </div>
+            <button onclick="requestLocation()">Test Location</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nearby Hospitals Page -->
+    <div id="hospitals" class="page">
+      <div class="full-page">
+        <h2 class="neon-blue" style="margin-bottom:20px;">Nearby Hospitals</h2>
+        <div style="margin-bottom:20px;">
+          <button class="primary" onclick="findNearbyHospitals()">🔍 Find Hospitals</button>
+          <button onclick="refreshHospitals()" style="margin-left:10px;">🔄 Refresh</button>
+          <span id="hospitalSearchStatus" style="margin-left:15px;color:var(--muted);"></span>
+        </div>
+        <div id="hospitalsList">
+          <div class="card">
+            <p style="text-align:center;color:var(--muted);">Click "Find Hospitals" to search for nearby medical facilities</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Health Insurance Page -->
+    <div id="insurance" class="page">
+      <div class="full-page">
+        <h2 class="neon-blue" style="margin-bottom:20px;">Health Insurance</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:30px;">
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">Insurance Details</h3>
+            <div class="field">
+              <label class="small">Policy Number</label>
+              <input id="insurancePolicyNumber" placeholder="Enter policy number">
+            </div>
+            <div class="field">
+              <label class="small">Provider Name</label>
+              <input id="insuranceProvider" placeholder="Insurance company name">
+            </div>
+            <div class="field">
+              <label class="small">Policy Holder Name</label>
+              <input id="insurancePolicyHolder" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label class="small">Expiry Date</label>
+              <input id="insuranceExpiry" type="date">
+            </div>
+            <button class="primary" onclick="saveInsuranceDetails()">Save Insurance Details</button>
+          </div>
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">Emergency Contact (Insurance)</h3>
+            <div class="field">
+              <label class="small">Insurance Helpline</label>
+              <input id="insuranceHelpline" placeholder="+91 XXXXXXXXXX">
+            </div>
+            <div class="field">
+              <label class="small">Emergency Claim Number</label>
+              <input id="insuranceClaimNumber" placeholder="Claim contact number">
+            </div>
+            <div style="margin-top:15px;">
+              <div id="insuranceStatus" style="padding:12px;background:rgba(255,255,255,0.02);border-radius:8px;border-left:4px solid var(--accent);">
+                <div class="small">Status: <span id="insuranceStatusText">Not Configured</span></div>
+              </div>
+            </div>
+            <button onclick="callInsuranceHelpline()" style="margin-top:15px;">📞 Call Insurance Helpline</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="neon-blue" style="margin-top:0;">Saved Insurance Information</h3>
+          <div id="savedInsuranceInfo">
+            <p style="color:var(--muted);text-align:center;">No insurance information saved yet. Please fill in your details above.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings" class="page">
+      <div class="full-page">
+        <h2 class="neon-blue" style="margin-bottom:20px;">Settings</h2>
+        <div class="settings-grid">
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">User Profile</h3>
+            <div class="field">
+              <label class="small">Name</label>
+              <input id="profileName" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label class="small">Phone</label>
+              <input id="profilePhone" placeholder="Phone number" readonly style="background: rgba(255,255,255,0.02); cursor: not-allowed;">
+              <span class="small" style="color: var(--muted);">Phone number cannot be changed</span>
+            </div>
+            <button class="primary" onclick="updateProfile()">Update Profile</button>
+          </div>
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">Appearance</h3>
+            <div class="appearance-toggle">
+              <span>Dark Mode</span>
+              <div class="toggle-switch" id="themeToggle" onclick="toggleTheme()">
+                <div class="toggle-slider"></div>
+              </div>
+              <span>Light Mode</span>
+            </div>
+            <div class="small" style="margin-top:10px;">Switch between dark and light appearance modes</div>
+          </div>
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">Privacy Settings</h3>
+            <div style="margin:15px 0;">
+              <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <input type="checkbox" id="shareLocation" checked> Share location with emergency contacts
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <input type="checkbox" id="autoCall" checked> Auto-call emergency services
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" id="dataCollection"> Allow anonymous crash data collection
+              </label>
+            </div>
+            <button onclick="savePrivacySettings()">Save Settings</button>
+          </div>
+          <div class="card">
+            <h3 class="neon-blue" style="margin-top:0;">Account</h3>
+            <div style="margin:15px 0;">
+              <div class="small" style="margin-bottom:15px;">Logged in as: <span id="currentUser">—</span></div>
+            </div>
+            <button class="danger" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- About Us Page -->
+    <div id="about" class="page">
+      <div class="full-page">
+        <h2 class="neon-blue" style="margin-bottom:20px;">About Crash Guard</h2>
+        <div class="card">
+          <h3 class="neon-blue" style="margin-top:0;">Our Mission</h3>
+          <p style="line-height:1.6;margin-bottom:20px;">
+            Crash Guard is designed to be your smart shield on the road. We believe that every motorcyclist deserves to ride with confidence, knowing that help is just a crash detection away. Our advanced system combines cutting-edge technology with intuitive design to provide real-time protection for riders everywhere.
+          </p>
+          
+          <h3 class="neon-blue" style="margin-top:20px;">Key Features</h3>
+          <ul style="line-height:1.8;margin-bottom:20px;">
+            <li><strong>Automatic Crash Detection:</strong> Advanced motion sensors detect crashes and automatically alert emergency contacts</li>
+            <li><strong>Intelligent Severity Detection:</strong> AI-powered system classifies crash severity (minor, moderate, severe) and sends priority-based alerts</li>
+            <li><strong>Smart Location Sharing:</strong> GPS-powered location sharing with emergency contacts and services</li>
+            <li><strong>Bluetooth Helmet Integration:</strong> Seamless connection with smart helmets for enhanced safety</li>
+            <li><strong>Helmet Wear Detection:</strong> Ignition lock system detects if helmet is properly worn</li>
+            <li><strong>Weather Monitoring:</strong> Real-time weather updates and daily notifications for safer riding</li>
+            <li><strong>Emergency Contact Management:</strong> Quick access to important contacts during emergencies</li>
+            <li><strong>Nearby Hospitals Finder:</strong> Instantly locate nearby hospitals with distance and contact information</li>
+            <li><strong>Health Insurance Integration:</strong> Store and access your health insurance details for emergencies</li>
+          </ul>
+
+          <h3 class="neon-blue" style="margin-top:20px;">How It Works</h3>
+          <p style="line-height:1.6;margin-bottom:20px;">
+            When a crash is detected, Crash Guard immediately analyzes the impact severity and starts a countdown timer (45s for minor, 30s for moderate, 15s for severe crashes). If you don't respond within this time, the system automatically shares your precise location with all your emergency contacts with appropriate priority alerts and can alert local emergency services. The system also displays nearby hospitals to help first responders. This ensures that help reaches you as quickly as possible, even if you're unable to call for help yourself.
+          </p>
+
+          <h3 class="neon-blue" style="margin-top:20px;">Severity Classification</h3>
+          <p style="line-height:1.6;margin-bottom:10px;">
+            Our intelligent severity detection system uses advanced algorithms to classify crashes:
+          </p>
+          <ul style="line-height:1.8;margin-bottom:20px;">
+            <li><strong>Minor (35-50 m/s²):</strong> Low-impact collision with 45-second response time and standard alerts</li>
+            <li><strong>Moderate (50-70 m/s²):</strong> Medium-impact collision with 30-second response time and priority alerts</li>
+            <li><strong>Severe (>70 m/s²):</strong> High-impact collision with 15-second response time and immediate emergency alerts</li>
+          </ul>
+
+          <h3 class="neon-blue" style="margin-top:20px;">Technology</h3>
+          <p style="line-height:1.6;margin-bottom:20px;">
+            Built using modern web technologies including GPS geolocation, device motion sensors with severity analysis algorithms, Web Bluetooth API, Firebase Authentication & Firestore for secure cloud storage, Google Places API for hospital location services, and responsive design principles. The system works across all modern smartphones and can integrate with compatible smart helmets for enhanced crash detection accuracy.
+          </p>
+
+          <div style="text-align:center;margin-top:30px;padding:20px;background:rgba(255,255,255,0.02);border-radius:8px;">
+            <div style="font-size:18px;margin-bottom:10px;" class="glow-blue">Developed with 🧠 by</div>
+            <div style="font-size:24px;font-weight:bold;" class="glow-red">RED HACK</div>
+            <div style="margin-top:10px;color:var(--muted);">Making roads safer, one ride at a time</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal templates -->
+  <div id="modalRoot" style="display:none"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <script src="script.js"></script>
+</body>
+</html>
